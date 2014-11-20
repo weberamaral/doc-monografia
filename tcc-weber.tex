@@ -1,0 +1,949 @@
+ 
+\documentclass[normaltoc,pnum,times,capchap,12pt]{abnt_Uniara}  %
+\usepackage{amsmath}
+\usepackage[brazil]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[dvips]{graphicx}
+\usepackage{abnt-alf}
+\usepackage[alf]{abntcite}
+\usepackage{enumitem}
+\usepackage{amssymb}
+\usepackage{wasysym}
+\usepackage{verbatim}
+\usepackage{dsfont}
+\usepackage{textcomp}
+\usepackage{pstricks}
+\usepackage[normalem]{ulem}
+\usepackage{tocloft}
+\usepackage{bigstrut}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{calligra}
+\usepackage{tabulary}
+\usepackage{tabularx}
+\usepackage{algorithm2e}
+\usepackage{graphicx}
+\usepackage{caption}
+\captionsetup{justification=centering,labelfont=bf}
+\usepackage{float}
+
+%\renewcommand{\ABNTchapterfont}{\bfseries}
+
+\renewcommand{\cftfigfont}{Figura }
+\renewcommand{\cfttabfont}{Tabela }
+%\renewcommand{\emph}{\textbf}
+
+%\renewcommand{\cftchapdotsep}{\cftdotsep} % preenche com pontilhados os capítulos no sumário
+
+\makeatletter   %Para que ele entenda o @
+% Define o comando que monta a lista de siglas
+\newcommand{\listadesiglas}{\pretextualchapter{Lista de Abreviaturas e Siglas}\@starttoc{lsg}}
+\newcommand{\sigla}[2]{{\addcontentsline{lsg}{sigla}{\numberline{#1}{#2}}}#1}
+\newcommand{\l@sigla}[2]{
+       \vspace{-0.75cm}
+       \leftskip 0em
+       \parindent 0em
+       \@tempdima 5em
+       \advance\leftskip \@tempdima \null\nobreak\hskip -\leftskip
+       {\normalfont #1}\hfil\nobreak\par}
+%%%%%%%%%%%%%%%%%%%%%%%%
+\makeatother
+
+\begin{document}
+
+%=====================================
+% DADOS INICIAIS
+%=====================================
+
+\curso{Sistemas de Informação}
+\autor{Weber Dias do Amaral}
+\titulo{Refatorando um aplicativo com Windows Phone utilizando padrões de projeto}
+\orientador[Orientador:]{Prof. Me. José Eduardo Ribeiro} 
+\coorientador[Co-orientador:]{Prof. Me. Denis Zaniro}
+\primeiroexaminador[1° Examinador:]{Prof.} 
+\segundoexaminador[2° Examinador:]{Prof.} 
+\local{Araraquara}
+\data{\the\year}
+\setlength{\tamanholinhaassinatura}{12cm}
+\datadefesa{20 de dezembro de 2014}
+\RG{43.603.297-1}  
+
+
+%=====================================
+% INICIO
+%=====================================
+
+\capa
+
+\folhaderosto
+
+\autenticidade
+
+\aprovacao
+
+\chapter*{}
+
+\vspace{9cm} % espaço superior, diminuir se a dedicatória ficar muito grande
+\begin{flushright}
+\begin{minipage}{10cm}
+\hspace{.7cm}
+
+%=====================================
+% DEDICATÓRIA
+%=====================================
+
+\textit {Á minha família, por sempre estar ao meu lado.}
+
+\end{minipage}
+\end{flushright}
+
+\vspace*{1cm}
+\clearpage
+
+%====================================
+% AGRADECIMENTOS
+%====================================
+
+\vfill
+\chapter*{AGRADECIMENTOS}
+\noindent 
+A Deus pela sabedoria e força concedidas ao longo do curso. \newline
+A minha família, por me apoiar durante todo este tempo. \newline
+Aos professores, pelos ensinamentos oferecidos. \newline
+Ao meu orientador, Professor Me. José Eduardo Ribeiro, pela orientação e compartilhamento de ideias. \newline
+A todos que direta ou indiretamente colaboraram na execução deste trabalho.
+
+%=====================================
+% RESUMO
+%=====================================
+
+\begin{resumo}
+\noindent % retira o parágrafo
+A refatoração soluciona problemas existentes em projeto de código, permitindo melhora na qualidade, flexibilidade e manutenibilidade do software. A sua correta utilização permite simplificar métodos, reutilizar componentes de código e aplicar padrões de projeto. Além disso, facilitam o trabalho dos desenvolvedores de software, pois apresentam soluções eficazes para problemas conhecidos. Ao todo são 99 refatorações divididas entre refatorações simples e refatorações voltada a padrões de projeto. Portanto o objetivo deste trabalho é estudar as mais utilizadas e aplicá-las em um projeto existente, que não faz uso das boas práticas de programação ou utilização de padrões de projeto.
+
+\noindent
+\textbf{Palavras-chave: Refatoração, Padrões de Projeto, MVVM, Windows Phone, .Net, C\#}
+
+\end{resumo}
+
+%=====================================
+% ABSTRACT
+%=====================================
+
+\begin{abstract}
+
+\noindent % retira o parágrafo
+Refactoring solves problems in code design, enabling improved quality, flexibility and maintainability of the software. Its proper use will simplify methods, reuse code components and apply design patterns. Also, make it easy for software developers, because they present effective solutions to known problems. Altogether there are 99 refactorings divided between simple refactorings refactorings and focused on design patterns. Therefore the aim of this study is the most used and apply them to an existing project that does not make use of good programming practices and use of design patterns.
+
+\noindent
+\textbf{Key-words: Refatoração, Padrões de Projeto, MVVM, Windows Phone, .Net, C\#}
+
+\end{abstract}
+
+%=====================================
+% FIGURAS
+%=====================================
+
+\listadefiguras
+%\renewcommand{\listtablename}{Lista de Quadros} % troca Lista de Tabelas por Lista de Quadros
+%\renewcommand{\tablename}{Quadro} % troca Tabela por Quadro
+
+%=====================================
+% TABELAS
+%=====================================
+
+%\listadetabelas
+%\pretextualchapter{Lista de símbolos} % se não existir, coloque um % no inínio da linha
+
+%=====================================
+% LISTA DE ABREVIATURAS E SIGLAS
+%=====================================
+%\pretextualchapter{Lista de Abreviaturas e Siglas}
+\listadesiglas
+
+
+%=====================================
+% SUMÁRIO
+%=====================================
+
+\addtocontents{toc}{\protect\thispagestyle{empty}} % retira a paginação do sumário
+\pagestyle{empty} % no caso de o sumário ter mais de uma página
+\sumario
+\pagestyle{plainheader} % no caso de o sumário ter mais de uma página
+
+%=================================================================================================================================
+%=================================================================================================================================
+%=================================================================================================================================
+
+%======================================
+% Introdução
+%======================================
+\chapter{Introdução}
+\section{Apresentação e Delimitação do Tema}
+A programação orientada a objetos estabelece alguns fundamentos referente a organização de um software. Fundamentos esses que resolve muitos problemas enfrentados pela programação procedural, além de diminuir consideravelmente o custo no desenvolvimento e na manutenção dos sistemas, \cite{rtp}.
+
+%A orientação a objetos além de ajudar a organizar e escrever menos, trouxe a possibilidade de distribuir as responsabilidades nos pontos certos tornando a aplicação mais %flexível e separando a lógica dos negócios.
+
+Com a utilização da orientação a objetos, notou-se que os projetos possuíam características semelhantes, mesmo em contextos distintos, necessitando de um processo detalhado que facilite o entendimento e a manutenção do software.  Algo que possibilite a reutilização de código existente em outros projetos, \cite{poo}. 
+
+O uso de Padrões de Projeto vem se tornando cada vez mais comum na confecção de software, tanto antes quanto depois da escrita de código. \cite[p.~17]{padroes} afirmam que "projetar software orientado a objetos é difícil, mas projetar software reutilizável orientado a objetos é ainda mais complicado". Outra forma de fazer uso de Padrões de Projeto é, de acordo com \cite{refatPad} por meio da Refatoração, neste caso o projeto do sistema é modificado sem adicionar características ou modificar o comportamento externo.
+
+Ao se falar em refatoração, muitos entendem que um determinado software irá passar por uma reconstrução, que irá ser implementado novas funcionalidades e inserido novos comportamentos. Porém, não é isso que a refatoração representa e sim uma alteração de código sem mudança no comportamento.
+
+Com o uso de metodologias de desenvolvimento ágil, o desenvolvedor encontra-se em uma situação, na maioria das vezes que, escrever código utilizando os principais conceitos de Padrões de Projeto e boas práticas de desenvolvimento irá resultar em um possível atraso na entrega do projeto.  Tendo como resultado um código mal escrito, sem planejamento, de difícil entendimento e com possíveis redundâncias.
+
+Para este trabalho será utilizado o aplicativo Uniara Virtual para Windows Phone, não sendo escopo o detalhamento do ciclo de desenvolvimento, quando necessário será utilizado diagramas \sigla{UML}{Unified Modeling Language} para abstração dos objetos, relacionamentos e sequencias de iteração.
+
+\section{Justificativa}
+De acordo com \cite{refatPad} existe diversas razões para a refatoração de código, sendo as mais comuns, tornar mais fácil a adição de novo código, melhorar o projeto de código existente, obter melhor entendimento de código e tornar a programação menos irritante.
+
+Para \cite[p.~52]{refatFowler} "Na primeira vez que você faz algo, você apenas faz. Na segunda vez em que você faz algo parecido, você estremece diante da duplicação, mas faz de qualquer forma. Na terceira vez em que faz algo parecido você refatora".
+
+Sem dúvidas iniciar um projeto seguinte as Boas Práticas de desenvolvimento e a utilização de Padrões de Projeto evitará refatorar o software constantemente, ou pelo menos a cada mudança, porém não quer dizer que futuramente não haverá a necessidade de refatorá-lo.
+
+A Uniara possui um sistema web para que os alunos acessem e visualizem suas notas, frequência, horário de aulas, histórico e outras funcionalidades de âmbito acadêmico. O atual sistema atende razoavelmente bem as necessidades quando acessado de um computador convencional, porém peca em alguns aspectos quando acessado de um dispositivo móvel, como um smartphone por exemplo.  Em meio a este cenário foi desenvolvido um aplicativo para Windows Phone denominado Uniara Virtual que visa suprir as necessidades dos alunos, proprietários desse dispositivo, permitindo a eles visualização de suas notas, faltas e aulas diárias.
+
+\section{Problema}
+O aplicativo desenvolvido para Windows Phone, não possui nenhuma utilização de padrões de projeto e nem foi aplicado as boas práticas de desenvolvimento.  Notou-se também que a codificação do aplicativo é de difícil entendimento e ainda mais custoso é sua manutenção. Pela falta de planejamento e falta da aplicação dos conceitos básicos de Programação Orientada a Objetos, fica notável a duplicação de código no projeto.
+
+Para resolver os atuais problemas identificados no aplicativo e não alterar suas funcionalidades, o mesmo passará por um processo de refatoração, visando melhorar a manutenção do aplicativo, sua codificação, identificar onde e como utilizar os padrões apropriados e aplicá-los.
+
+\section{Objetivo}
+Este trabalho tem como objetivo principal demonstrar os benefícios da refatoração de um software utilizando a padrão MVVM, que atualmente é o mais apropriado e indicado para este tipo de aplicação. Como objetivo secundário, será apresentado partes do processo de desenvolvimento do aplicativo, análise dos principais requisitos e ferramentas utilizadas.
+
+\section{Metodologia}
+De acordo com os objetivos que foram propostos, a pesquisa será de caráter exploratório, pois possibilitará ao pesquisador um aprimoramento das ideias das causas dos atrasos nos projetos \cite{tcc_proj} bem como formular melhor o problema estudado \cite{tcc_txt}.
+
+Foi utilizada a pesquisa bibliográfica com base em material já elaborado, constituído principalmente de livros e artigos científicos \cite{tcc_proj}.
+
+Foi utilizado para análise dos dados o Visual Studio, Microsoft Visio, a linguagem de programação C\# e o framework .NET.
+
+\section{Estrutura do trabalho}
+Este trabalho de conclusão de curso está organizado em 4 capítulos, além deste. O capítulo 2 aborda os conceitos da programação orientada a objetos, introdução ao padrão MVVM e conceitos de refatoração de software e aplicabilidade.
+
+O capítulo 3 está dividido em duas seções. Na primeira é detalhado a forma de implementação do aplicativo Uniara Virtual, realizado uma engenharia reversa afim de obter o diagrama de classe e com isso identificar os principais pontos de refatoração.  Na segunda parte, com os principais problemas identificados, será aplicado a refatoração necessária rumo ao padrão MVVM.
+
+Por fim, no capitulo 4 encontra-se as considerações finais. 
+
+%=====================================
+% Revisão de Literatura
+%=====================================
+\chapter{Revisão de Literatura}
+%===============================================================================================================
+%===================================== Programação Orientada a Objetos
+\section{Programação Orientada a Objetos}
+Todos os aspectos importantes do paradigma de programação orientado a objetos, incluindo classes e subclasses, a herança, criação de objetos, etc., originou-se da linguagem de programação Simula. Sendo mais bem conceituada no laboratório da Xérox, em Palo Alto, sendo refinada numa sequência de protótipos da linguagem Smalltalk. O termo "Programação Orientada a Objetos"  foi criado por Alan Kay, líder do projeto Smalltalk. Ele formulou a chamada "analogia biológica",  \cite{email_alankay}, onde um sistema de software funcionasse como um ser vivo, no qual cada "organismo" só seria capaz de se comunicar com outros organismos através do envio de mensagens.
+
+Adicionalmente, cada organismo se comportaria como uma unidade autônoma.  De uma forma mais geral, Alan Kay pensou como construir um sistema de software a partir de agentes autônomos que interagem entre si.
+
+Através desta analogia biológica, ele definiu os fundamentos da orientação a objetos:
+\begin{itemize}
+\item Qualquer coisa é um objeto;
+\item Objetos realizam tarefas através da requisição de serviços a outros objetos;
+\item Cada objeto pertence a uma determinada classe.  Sendo que essa classe agrupa objetos similares;
+\item A classe é um repositório para comportamento associado ao objeto;
+\item Classes são organizadas em hierarquia.
+\end{itemize}
+De acordo com \cite[p.~8]{poo}, "a ideia por trás das linguagens de programação orientada a objetos é combinar em uma única entidade tanto dados quanto funções que operam sobre esses dados. Tal entidade é denominada \textit{objeto}".
+
+\subsection{O que são objetos?}
+\cite{mono_poo} define um objeto como sendo um "ente"  ativo dotado de certas características que o tornam inteligente, a ponto de tomar certa decisões quando solicitado. 
+Para \cite[p.~5]{aoo} "Um objeto é qualquer indivíduo, lugar, coisa, tela, relatório ou conceito que seja aplicável ao sistema". Todo objeto pertence a uma determinada classe e possui atributos próprios. Os atributos são mutáveis e podem receber diferentes valores de acordo com as características do objeto. Em seu livro, \cite{poo} cita que as funções de um objeto, tipicamente são a única forma de acesso aos dados. Ou seja, caso um objeto necessite de dados de outros objetos, este deverá chamar suas funções para que retorne os dados.
+
+Em geral os objetos possuem as seguintes características:
+\begin{itemize}
+\item Identidade
+\item Estado
+\item Comportamento
+\end{itemize}
+
+\subsection{Os quatro pilares da POO}
+Para \cite{mono_poo}, uma linguagem de programação é considerada orientada a objetos quando implementa quatro conceitos básicos: \textbf{abstração, encapsulamento, herança e polimorfismo}.
+
+\subsubsection{Abstração}
+Na língua portuguesa, de acordo com \cite{aurelio}, " 'abstrato' é o que expressa uma qualidade ou característica separada do objeto a que pertence ou a que está ligada".
+
+Para \cite{mono_poo}, "a abstração é considerada como a habilidade de modelar características do mundo real do problema que o programador esteja tentando resolver". Na POO, uma classe é uma abstração de entidades existentes no domínio do sistema de software.
+
+\cite[p.~11]{dot_net_61} afirmam que "pelo princípio da abstração, nós isolamos os objetos que queremos representar do ambiente complexo em que se situam, e nesses objetivos representamos somente as características que são relevantes para o problema em questão". 
+
+\begin{figure}[H]
+\centering
+\caption{Exemplo de Modelo Conceitual}
+\fbox{\includegraphics[scale=0.5]{./graphics/modelo_conceitual.eps}}
+\textit{\small{Fonte: http://www.dsc.ufcg.edu.br/~jacques/cursos/apoo/html/anal1/anal1.htm}}
+\end{figure}
+
+O uso apropriado da abstração permite que um mesmo modelo conceitual seja utilizado para todas as fases de desenvolvimento de um sistema, desde sua análise até sua documentação.
+
+\subsubsection{Encapsulamento}
+A característica do encapsulamento é ocultar detalhes da implementação do mundo exterior. \cite[pag.~13]{dot_net_61} afirmam que "as pessoas não precisam se preocupar em saber como eles são constituídos internamente acelerando o tempo de desenvolvimento". Isto permite ao desenvolvedor separar a implementação do objeto de seu comportamento.
+
+Esta separação cria o que é chamada de "caixa-preta", pois toda e qualquer transação realizada com esses dados só pode ser feita através de procedimentos internos do objeto, \cite{mono_poo}. Desta maneira, apenas é necessário conhecer a interface externa do objeto.
+
+A maioria das linguagens de programação orientadas a objeto suportam três níveis de acessos:
+\begin{itemize}
+\item \textbf{Público} - acessível a todos
+\item \textbf{Protegido} - acessível apenas para a instancia, ou seja, o objeto e suas subclasses
+\item \textbf{Privado} - acessível apenas ao objeto
+\end{itemize}
+
+\subsubsection{Herança}
+Outro importante conceito da \sigla{POO}{Programação Orientada a Objetos} é a herança. A herança permite que uma determinada classe possua o mesmo comportamento que outra classe e estender ou adaptar esse comporta- mento para fornecer uma ação especial para necessidades especificas.
+\begin{citacao}
+A herança, de um ponto de vista prático, pode ser entendida como sendo um conjunto de instancias criadas a partir de um outro conjunto de instancias com características semelhantes, e os elementos desse subconjunto herdam todas as características do conjunto original. \cite[p.1]{mono_poo}
+\end{citacao}
+
+\begin{figure}[H]
+\centering
+\caption{Exemplo de Herança}
+\fbox{\includegraphics[scale=0.5]{./graphics/heranca.eps}}
+\end{figure}
+
+Observe que as características (Nome, Idade, Cor dos olhos, etc.), ou seja, as características da classe Mamífero são comuns a todas as classes derivadas.  Todavia, cada classe possui, adicionalmente suas próprias características.
+
+\subsubsection{Polimorfismo}
+Polimorfismo é capacidade de dois ou mais objetos responderem a mesma mensagem. De uma forma mais geral, polimorfismo é o que se apresenta sob diversas formas. Para \cite{mono_poo} "um método polimórfico é aquele que pode ser aplicado a várias classes de objetos sem que haja qualquer inconveniente".
+
+\begin{figure}[H]
+\centering
+\caption{Exemplo de Polimorfismo}
+\fbox{\includegraphics[scale=0.5]{./graphics/polimorfismo.eps}}
+\end{figure}
+
+A Figura traz um método escrito em \sigla{C\#}{CSharp - Linguagem de programação orientada a objetos} herdado de uma superclasse e demonstra o funcionamento do polimorfismo, têm-se uma superclasse Mamífero, o método herdado Comunicar das subclasses Homem e Cachorro têm o mesmo nome, mas a implementação do método é diferente para cada.
+
+%==============================================================================================================
+%===================================== Padrões de Arquitetura
+\section{O Padrão MVVM}
+O padrão de arquitetura \sigla{MVVM}{Model-View-ViewModel} foi criado em 2005 por John Gossman, um dos arquitetos do \sigla{WPF}{Windows Presentation Foundation} e Silverlight na Microsoft. 
+O MVVM é uma adaptação do padrão \textbf{Presentation Model} de \cite{pm}, que visa a separação de responsabilidades entre camadas de aplicação lógica e a camada de visão.
+
+Estruturalmente, uma aplicação que faz uso do padrão MVVM consiste basicamente em três camadas: o \textbf{Modelo (\textit{Model, em inglês})}, a \textbf{Exibição (\textit{View, em inglês})} e a \textbf{Modelo de Exibição (\textit{ViewModel, em inglês})}.
+
+De acordo com \cite{prism5}, no padrão \textbf{MVVM}, a \textit{View} encapsula a \sigla{UI}{User Interface} e qualquer lógica relacionada a ela, a \textit{ModelView} encapsula a lógica de apresentação e os estados, e a \textit{Model} encapsula a regra de negócio e os dados da aplicação. A \textit{View} interage com a \textit{ViewModel} por intermédio de comandos e eventos associados. A \textit{ViewModel} realiza ações na \textit{Model}; seja obtendo dados, atualizando ou inserindo informações no modelo.
+
+\begin{figure}[H]
+\centering
+\caption{Interação das camadas no padrão MVVM}
+\fbox{\includegraphics[scale=0.5]{./graphics/mvvm.eps}}
+\end{figure}
+
+\subsection{A camada de Visão - View} 
+Para \cite{prism5} "a responsabilidade da View é definir a estrutura e aparência da interface do usuário". Semelhantemente, \cite[p.~39]{wp8app} afirma que "a View em um aplicativo define o layout, posicionamento dos controles e tudo que o usuário pode visualizar na tela". O ideal é que a View seja implementada apenas utilizando a linguagem de marcação \sigla{XAML}{eXtensible Application Markup Language}. 
+
+Cada View possui uma propriedade \textit{DataContext} que referencia uma ViewModel, desta maneira, todas as propriedades, comandos e métodos expostos pela ViewModel podem ser invocados na View.
+
+\begin{figure}[H]
+\centering
+\caption{MainPage.xaml - Página de aplicação Windows Phone}
+\fbox{\includegraphics[scale=0.5]{./graphics/mvvm_view.eps}}
+\label{fig:mvvm_view}
+\end{figure}
+
+A figura \ref{fig:mvvm_view} uma página básica de uma aplicação Windows Phone. Podemos notar que a propriedade \textit{DataContext} faz referência para MainViewModel. Desta maneira a View passa a ter uma ligação "direta" com está ViewModel.  Isto quer dizer que, qualquer controle \textit{(elemento gráfico)}, pode ser associado a uma propriedade na ViewModel, com isso, sempre a View sofrer alguma alteração, a ViewModel também será alterada e vice-versa.
+
+\subsection{A camada Modelo de Exibição - ViewModel}
+No padrão MVVM a ViewModel encapsula a lógica de apresentação e dados para a View. \cite{prism5} afirma que "a camada ViewModel não possui nenhuma referência direta a camada de visão ou conhecimento".  O que a ViewModel implementa são propriedades e comandos para que a View possa vincular dados e notificar mudanças de estado por intermédio de eventos associados.
+
+De acordo com \cite{prism5} a "ViewModel pode converter ou manipular os dados que serão consumidos na View", definindo propriedades adicionais para um especifico cenário. A ViewModel pode, também, implementar lógica de validação, garantindo assim uma consistência das informações a serem armazenadas ou apresentadas ao usuário.
+
+A ViewModel está relacionada com as classes de modelo em um típico relacionamento \textit{um-para-muitos}. O que sugere que uma ViewModel pode combinar dados de duas fontes distintas  \cite{wp8app} e transformá-los para apresentação na View.
+
+\begin{figure}[H]
+\centering
+\caption{Composição de dados de fontes diferentes}
+\fbox{\includegraphics[scale=0.5]{./graphics/mvvm_viewmodel.eps}}
+\end{figure}
+
+\subsection{A camada de Modelo - Model}
+No padrão MVVM a Model encapsula a lógica de negócios e acesso a dados da aplicação. \cite[p.~40]{wp8app} afirma que "a camada de modelo é independente da ViewModel, View e não deve ser projeta para qualquer armazenamento de informações visuais".
+
+As classes que representam a camada de modelo normalmente implementam a interface INotifyPropertyChanged para notificar a alteração de dados. 
+
+\begin{figure}[H]
+\centering
+\caption{Implementação da Interface INotifyPropertyChanged}
+\fbox{\includegraphics[scale=0.5]{./graphics/mvvm_model.eps}}
+\label{fig:mvvm_model}
+\end{figure}
+Na figura \ref{fig:mvvm_model} a classe \texttt{Pessoa} implementa a interface \texttt{INotifyPropertyChanged}. A propriedade \texttt{Nome}, sempre que sofre alguma alteração, notificará a View.
+
+\subsection{Passagem de Informações}
+Assim como no padrão \textit{Presentation Model} \cite{pm}, a parte mais importante para o MVVM é a sincronização dos dados entre a visão e o modelo de exibição.
+
+No MVVM essa sincronização é realizada pelo mecanismo chamado DataBinding, que estabelece uma conexão entre a View e ViewModel, provendo notificações que, quando os dados são alterados, os elementos associados refletem á essas alterações automaticamente, \cite{databinding}. 
+
+\begin{figure}[H]
+\centering
+\caption{Mecanismo de ligação de dados entre a View e ViewModel}
+\fbox{\includegraphics[scale=0.5]{./graphics/databinding_mvvm.eps}}
+\label{fig:mvvm_databinding}
+\end{figure}
+
+Na figura \ref{fig:mvvm_databinding}, cada elemento na View está vinculado a uma propriedade na ViewModel. Desta maneira, quando a View está sendo carregada, seu DataContext associado á ViewModel sincroniza os dados com os elementos. Este vinculo pode seguir uma das três opções: 
+\begin{itemize}
+\item \textbf{OneWay}: as alterações realizadas na propriedade, ViewModel, refletem na View;
+\item \textbf{TwoWay}: as alterações realizadas na propriedade, ViewModel, repletem na View, assim como as alterações da View refletem na propriedade da ViewModel; e
+\item \textbf{OneWayToSource}: é o contrário de \textit{OneWay}
+\end{itemize}
+
+Para que a ViewModel notifique a View de alterações, está deve implementar a interface INotifyPropertyChanged. Está interface expoe um único evento PropertyChanged, que deve ser invocado em cada propriedade que deseja notificar a View.
+
+%================================================================================================
+%===================================== Refatoração
+\section{Refatoração}
+De acordo com \cite[p.~35]{refatPad} a "refatoração é uma transformação de preserva comportamento".
+\begin{citacao}
+\textbf{Refatoração} é o processo de alteração de um sistema de software de modo que o comportamento observável do código não mude, mas sua estrutura in- terna seja melhorada. É uma maneira disciplinada de aperfeiçoar o código que minimiza a chance de introdução a falhas. Em essência, refatorar é melhorar o projeto do código após este ter sido escrito \cite[p.~52]{refatFowler}
+\end{citacao}
+Ainda em seu livro a palavra Refatoração possui dois significados, sendo a primeira na forma de substantivo e a segunda como verbo.
+\begin{citacao}
+\textbf{Refatoração}(\textit{substantivo}): uma alteração feita na estrutura interna do software para torná-lo mais fácil de ser entendido e menos custoso de ser modificado sem alterar seu comportamento observável. \newline
+\textbf{Refatoração}(\textit{verbo}): reestruturar o software aplicando uma série de refatorações sem alterar seu comportamento observável. \cite[p.~52]{refatFowler}
+\end{citacao}
+Pode-se afirmar que a Refatoração é uma "limpeza de código" afim de obter uma fácil compreensão e modificação. Remover código duplicado, simplificação de código condicional, renomeação de variáveis e clarificação de código que não está claro são algumas das tarefas realizadas durante um processo de refatoração. \cite{refatPad} afirma que para refatorar com segurança deve-se realizar testes manualmente ou automatizados com o intuito de verificar se as alterações não quebraram nada.
+
+\subsection{Quando Refatorar}
+A melhor forma de Refatorar código é continuamente, ao invés de em fases. A cada alteração no código, adição de nova funcionalidade, manutenção ou mesmo em revisão de código. Quando identificar um código que precise ser melhorado, melhore-o o mais rápido afirma \cite{refatPad}.
+
+Ainda para \cite{refatPad}, outra forma de identificar um código que necessita de refatoração é ao revisá-lo, código mal identado, grande quantidade de parâmetros em métodos, classes enormes e excesso de comentários são indícios que é necessário refatorar esse código.
+
+Vale salientar que mesmo a refatoração sendo continua em um determinado projeto, ela deve ser realizada em pequenos passos, ou seja, ao identificar que o código necessita de refatoração o mesmo deve ser realizado em pequenos passos e sempre atentando para os testes manuais ou automatizados caso existam, \cite[p.~42]{devmedia_eng}.
+
+Antes de refatorar deve-se analisar o código, ou melhor, conhecer o código, evitando o consumo de diversas horas para a refatoração. Lembrando que se o prazo for curto para a entrega do projeto, entre escolher adicionar a nova funcionalidade e refatorar o código, adicione a nova funcionalidade e refatore depois, \cite{refatPad}.
+
+Há também casos em que não se deve refatorar um código, explica \cite[p.~63]{refatFowler} "Há situações em que o código está tão confuso que, embora você pudesse refatorá-lo, seria mais fácil recomeçar do princípio.". Nesse caso, onde nada realmente funciona, o melhor a fazer é recomeçar o projeto.
+
+\subsection{Problemas da Refatoração}
+Mesmo que a técnica de refatoração traga diversas vantagens para o projeto atual, ainda sim deve-se tomar algumas preocupações quanto alguns problemas. 
+Migração de banco de dados, em casos que aplicações são dependentes de seus esquemas. 
+Nos casos de bancos orientados a objetos deve-se tomar muito cuidado com a alteração das estruturas dessas classes. 
+De acordo com \cite{refatFowler} a mudança na interface de um sistema pode causar diversos problemas, há casos que ao alterar a interface pública o programador deve manter a nova e a antiga até que seus clientes se adequem ás mudanças.
+
+\subsection{Refatoração e Desempenho}
+Em alguns projetos de software o fator desempenho é um requisito não-funcional, mas em outros não, isso irá depender muito da aplicabilidade do software. 
+Quando vamos realizar a refatoração devemos estar cientes que o desempenho pode ser comprometido. 
+De acordo com \cite[p.~66]{refatFowler} "Refatorar corretamente fará software rodar mais devagar, mas também o tornará mais sensível ao ajuste de desempenho.".
+
+\subsection{Catálogo de Refatorações}
+Para refatorar um código é necessário primeiramente, identificar os pontos que necessitam de melhorias. 
+Mas também é necessário que conheça quais os tipos de refatorações disponíveis e quando e como aplica-las, neste caso Catálogos de Refatorações ajudam nessa tarefa apresentando uma breve descrição, propósito e uma mecânica básica para efetuar a determinada refatoração.
+
+Em seu livro \cite{refatFowler} apresentam ao todo 72 refatorações catalogadas em diversas categorias, como: Compondo Métodos, Movendo Recursos Entre Objetos, Organizando Dados, Simplificando Expressões Condicionais, Tornando as Chamadas de Métodos Mais Simples, Lidando com Generalização e Refatorações Grandes. 
+\cite{refatPad} aponta mais 27 refatorações voltadas a Padrões de Projeto. Ao todo são 99 refatorações catalogadas que apresentam uma motivação, algumas delas possui um diagrama de UML para representar a intercomunicação dos objetos no escopo, uma mecânica de execução e um exemplo de código. 
+
+Embora haja ao todo 99 refatorações é certo dizer que a possibilidade de um único projeto usá-las é quase remota. Sendo assim e por não ser escopo deste trabalho apresentar e descrever todas as refatorações delimitares a apenas 9 refatorações que serão, de fato, utilizadas para refatorar o aplicativo Uniara Virtual. Cada uma delas será apresentada pelo nome, motivação e aplicabilidade.
+
+\subsubsection{Extrair Método}
+"Você tem um fragmento de código que pode ser agrupado. Transforme o fragmento em um método cujo nome exemplifique o propósito do mesmo" \cite[p.~100]{refatFowler}.
+
+\begin{figure}[H]
+\centering
+\caption{Extrair Métodos}
+\fbox{\includegraphics[scale=0.5]{./graphics/extractmethod.eps}}
+\textit{Fonte: http://www.refactoring.com/catalog/extractMethod.html}
+\end{figure}
+
+Provavelmente a refatoração mais utilizada entre os desenvolvedores, sendo aplicada em métodos longos. 
+O objetivo aqui é encontrar um método com código muito longo, criar um novo método com o nome que exemplifique o propósito do fragmento de código que será extraído do método longo e copiar o fragmento para dentro desse novo método. 
+Caso haja variáveis locais sendo usadas por esse fragmento, passe-as como parâmetro para esse novo método. 
+\cite{refatFowler}) apresenta um problema que deverá ser corrigido com o uso de outras refatorações \textit{Dividir Variável Temporária} \cite[p.~104]{refatFowler}) e \textit{Substituir Variável Temporária por Consulta} \cite[p.~108]{refatFowler}. 
+Neste caso o problema é que se o fragmento de código modificar alguma variável de escopo local do método que foi removido a melhor solução é fazer com que esse método retorno seu valor para essa variável. Após isso compile e teste o projeto para verificar se tudo funciona corretamente.
+
+\subsubsection{Encapsular Classes com Fábrica}
+"Clientes instanciam diretamente classes que residem em um pacote e implementam uma interface em comum. Torne os construtores de classe não-públicos e deixe os clientes criarem instancias das classes usando uma Factory" \cite[p.~108]{refatPad}.
+
+\begin{figure}[H]
+\centering
+\caption{Encapsular Classes com Fábrica}
+\fbox{\includegraphics[scale=0.5]{./graphics/classesWithFactory.eps}}
+\textit{Fonte: http://industriallogic.com/xp/refactoring/classesWithFactory.html}
+\end{figure}
+
+O Objetivo dessa refatoração e ocultar conhecimento desnecessário á clientes de outros pacotes que queiram instanciar diretamente classes que implementam uma interface comum. 
+
+De acordo com \cite{refatPad} a primeira motivação para tal refatoração é seguir o mantra "programe para interface, não para uma implementação" a segunda é porque fornece uma maneira de ocultar classes que não precisam ser visíveis fora do pacote e a terceira é porque simplifica a instanciação de tipos atribuindo a responsabilidade a uma fábrica de objetos.
+
+A mecânica para essa refatoração não é complexa, porém é aplicável quando as classes implementam uma \textit{interface} pública comum, compartilham a mesma \textit{superclasse} e estão no mesmo pacote. 
+Atendendo a esses requisitos, o processo de refatoração é simples: identifique as classes que estão no mesmo pacote e compartilham a mesma \textit{superclasse} ou/e implementam a mesma \textit{interface}. 
+Para cada classe deixe seu construtor não-público e crie um método público-estático que será o método de criação dessa classe. Aplique \textit{Mover Método} \cite[p.~125]{refatFowler} para que cada método de criação seja movido para a \textit{superclasse}. 
+Para finalizar substitua as chamadas antigas de instanciação dos clientes para que chamem esses métodos de criação. 
+Após isso compile e teste o projeto para verificar se tudo funciona corretamente.
+
+\subsubsection{Encadear Construtores}
+"Você tem múltiplos construtores que contém código duplicado. Encadeie os construtores para obter a menor quantidade de duplicação" \cite[p.~374]{refatPad}.
+
+\begin{figure}[H]
+\centering
+\caption{Encadear Construtores}
+\fbox{\includegraphics[scale=0.5]{./graphics/chainConstructors.eps}}
+\textit{Fonte: http://industriallogic.com/xp/refactoring/chainConstructors.htmll}
+\end{figure}
+
+Um dos maiores problemas em projetos de software é sem dúvida código duplicado, de acordo com \cite{refatFowler} duplicação de código em construtores é um grande problema, pois caso adicione uma nova variável a uma chamada de um construtor deverá replicá-la em todos os construtores, resultando em duplicação de código. 
+O objetivo dessa refatoração é fazer com que não haja duplicação de código nos construtores, sendo assim o necessário a fazer é encadear os construtores e realizar chamadas entre eles do menos especifica para o mais especifico. 
+\cite[p.~375]{refatPad} lembra que "Se você achar que ter muitos construtores em sua classe diminui a sua usabilidade, considere aplicar \textit{Substituir Construtores por Métodos de Criação}". 
+A mecânica para essa refatoração é muito simples: encontre os construtores que possui código duplicado, faça com que o menos especifico chame o mais especifico de forma a remover a duplicação de código.
+
+Verifique a necessidade de passar parâmetros padrões para os construtores mais específicos. Após isso compile e teste o projeto para verificar se tudo funciona corretamente.
+
+\subsubsection{Introduzir Objeto Nulo}
+"Lógica para manipular uma variável ou atributo nulo está duplicada ao longo do código. Substitua a lógica para manipular nulos por um Objeto Nulo, um objeto que fornece comportamento adequado para nulos." \cite[p.~334]{refatPad}.
+
+\begin{figure}[H]
+\centering
+\caption{Introduzir Objeto Nulo}
+\fbox{\includegraphics[scale=0.4]{./graphics/nullObject.eps}}
+\textit{Fonte: http://industriallogic.com/xp/refactoring/nullObject.html}
+\end{figure}
+
+Ao se programar e utilizar objetos que possuem atributos que não foram inicializados e efetuar uma chamada a eles, uma exceção pode ser lançada ou diversos problemas podem ocorrer no sistema. Para essa situação desenvolvedores utilizam de artefatos de verificação com a intenção de prevenir tal problema, desviando o fluxo para a possível inicialização do atribuído. Seguindo essa abordagem não teremos problemas com variáveis nulas, mas outro problema é ocasionado com isso, a duplicação de código. Imagine repetir essa verificação para cada situação que for usar esse objeto e seu atribuído possa ainda está nulo, além da duplicação de código corre-se o perigo de outro desenvolvedor esquecer de realizar a verificação e nos depararmos com código duplicado e problema com atributos nulos.
+
+\subsubsection{Subir Método na Hierarquia}
+"Você tem dois métodos nas subclasses que produzem resultados idênticos. Mova-os para a superclasse." \cite[p.~275]{refatFowler}.
+
+\begin{figure}[H]
+\centering
+\caption{Subir Método na Hierarquia}
+\fbox{\includegraphics[scale=0.5]{./graphics/pullUpMethod.eps}}
+\textit{Fonte: http://www.refactoring.com/catalog/pullUpMethod.html}
+\end{figure}
+
+Um dos conceitos mais importantes na Refatoração é a eliminação de código duplicado. Embora ambos os métodos funcionem corretamente no projeto atual, uma futura alteração pode ser realizada em um mas no outro não. \cite{refatFowler} cita que o caso mais simples de \textit{Subir Método na Hierarquia} é quando há dois métodos idênticos no código. Porém existe casos em que o método faz referência a características que estão na \textit{subclasse} mas não na \textit{superclasse}, neste caso para \cite[p.~275]{refatFowler} "Se você tiver dois métodos que sejam similares mas não o mesmo, você pode ser capaz de usar \textit{Criar Método Padrão} (293)".
+
+A mecânica para esta refatoração é relativamente simples: encontre métodos em suas \textit{subclasses} que são idênticos, caso possuam assinaturas diferentes, altere-as para utilizá-la na \textit{superclasse}. Crie um novo método na superclasse e adapte se necessário. Copie o conteúdo de um dos métodos para o novo método criado na \textit{superclasse}, apague os métodos na subclasse.
+
+Após isso compile e teste o projeto para verificar se tudo funciona corretamente.
+
+\section{Considerações Finais}
+A programação orientada a objetos tem levado a mudanças fundamentais na forma como os sistemas de informações são projetados, resultando em aplicações escaláveis, confiáveis e reutilizáveis. Atualmente, linguagens de programação orientadas a objetos são amplamente utilizadas, desde sistemas complexos e robustos até pequenas aplicações pessoais.
+
+O uso de padrões de projeto possibilita o desenvolvimento de software de melhor qualidade, uma vez que utilizam eficientemente os conceitos da programação orientada a objetos.
+
+A refatoração é uma técnica para torna o código mais simples, mais fácil de ser entendido e, por fim, mais manutenível. 
+O risco de realizar alterações em código pode comprometer o funcionamento correto da aplicação, isso se realizado sem as devidas precauções. 
+Refatorações foram catalogadas para o uso sistemático e com apoio de ferramentas, sempre direcionado a testes, desta maneira o desenvolvedor é capaz de realizar alterações com mais segurança.
+
+%=====================================
+% Análise do projeto Uniara Virtual
+%=====================================
+\chapter{Desenvolvimento do aplicativo Uniara Virtual com Windows Phone utilizando padrões de projeto}
+%===============================================================================================================
+%===================================== 
+% %\section{Considerações iniciais}
+Esse capítulo aborda o desenvolvimento do trabalho e está dividido em cinco tópicos, o primeiro tópico descreve os requisitos do aplicativo Uniara Virtual. O segundo tópico refere-se a análise do projeto, onde são apresentados alguns diagramas de classes e trechos de códigos. O terceiro tópico refere-se as alterações necessárias para uso do padrão MVVM. O quarto tópico refere-se a refatoração de código na aplicação. No último tópico são apresentados os resultados obtidos.  
+
+\section{Requisitos do aplicativo Uniara Virtual}
+\subsection{Aluno - Autenticar}
+Tela responsável pela autenticação do Aluno no aplicativo.  O Aluno deve informar as credenciais utilizadas no site Uniara Virtual para obter acesso ao aplicativo.
+\begin{figure}[H]
+\centering
+\caption{Tela de autenticação}
+\fbox{\includegraphics[scale=0.4]{./graphics/login.eps}}
+\end{figure}
+
+\subsection{Aluno - Visualizar nota}
+Tela responsável pela visualização das notas de uma determinada disciplina cursada pelo aluno. Esta tela deve organizar as disciplinas por bimestre, permitindo que o Aluno selecione o bimestre desejado e visualize as notas das disciplinas.
+\begin{figure}[H]
+\centering
+\caption{Tela de visualização de notas}
+\fbox{\includegraphics[scale=0.4]{./graphics/notas2.eps}}
+\end{figure}
+
+\subsection{Aluno - Visualizar frequência}
+Tela responsável pela visualização da frequência atual do aluno. Está tela deverá apresentar ao Aluno a data da última atualização do sistema e o percentual de frequência na disciplina.
+\begin{figure}[H]
+\centering
+\caption{Tela de visualização de frequência}
+\fbox{\includegraphics[scale=0.4]{./graphics/freq.eps}}
+\end{figure}
+
+\subsection{Aluno - Visualizar horário de aula}
+Tela responsável pela visualização do horário semanal de aulas do aluno. Nesta tela o Aluno pode visualizar o dia da semana em que a disciplina é ministrada, assim como a sala de aula.
+\begin{figure}[H]
+\centering
+\caption{Tela de visualização de horário de aula}
+\fbox{\includegraphics[scale=0.4]{./graphics/aula.eps}}
+\end{figure}
+
+\subsection{Aluno - Calcular média}
+Funcionalidade responsável pelo cálculo de média de uma determinada disciplina no decorrer dos bimestres.
+\begin{figure}[H]
+\centering
+\caption{Tela de visualização de detalhes da disciplina com cálculo de média}
+\fbox{\includegraphics[scale=0.4]{./graphics/media.eps}}
+\end{figure}
+
+\subsection{Geral - Configurações}
+Tela responsável pela configuração básica do aplicativo. Nesta tela o Aluno poderá permitir que o aplicativo armazene a credencial afim de realizar login automaticamente. 
+\begin{figure}[H]
+\centering
+\caption{Tela de configurações}
+\fbox{\includegraphics[scale=0.4]{./graphics/config.eps}}
+\end{figure}
+
+\subsection{Geral - Informações}
+Tela responsável pela visualização das informações pertinentes ao aplicativo, como: versão, contato e etc.
+\begin{figure}[H]
+\centering
+\caption{Tela de informações}
+\fbox{\includegraphics[scale=0.4]{./graphics/about.eps}}
+\end{figure}
+
+\section{Analise do aplicativo Uniara Virtual}
+Neste tópico é realizado uma breve análise do estado atual do projeto Uniara Virtual. Sendo descrito quais ferramentas utilizadas para desenvolvimento e como o projeto de código está organizado. Para melhor entendimento é apresentado os diagramas de classes e trechos de código do aplicativo.
+
+\subsection{Ferramentas de desenvolvimento}
+Assim como qualquer aplicação desenvolvida em \sigla{.NET}{Plataforma de desenvolvimento de aplicativos para Windows}, a \sigla{IDE}{Integrated Development Environment} utilizada é o Visual Studio, neste caso o Visual Studio 2012 para Windows Phone.
+Para o desenvolvimento de aplicativos Windows Phone é necessário uma máquina com o sistema operacional Windows com o \sigla{SDK}{Software Development Kit} do Windows Phone instalado. Uma conta de desenvolvedor de aplicativos é necessária para publicação na Marketplace do Windows Phone.
+
+\subsection{Organização do projeto}
+\begin{figure}[H]
+\centering
+\caption{Organização do projeto}
+\fbox{\includegraphics[scale=0.4]{./graphics/proj_org_nopattern.eps}}
+\label{fig:proj_org_1}
+\end{figure}
+
+O Visual Studio automaticamente adiciona pastas a estrutura de código do projeto, visando a separação de alguns arquivos estáticos usado pelo aplicativo. 
+
+Na pasta \textbf{Resources}, normalmente são adicionados os arquivos referentes a textos estáticos da aplicação, visando a internacionalização do aplicativo. A pasta \textbf{Assets} são adicionados os arquivos de imagens e ícones que a aplicação utilizará. Os arquivos com prefixo \textbf{SplashScreenImage} representam a imagem que será apresentada para o usuário quando o aplicativo iniciar. Ainda com arquivos incluídos automaticamente pelo Visual Studio, o \textbf{App.xaml} representa a classe principal de qualquer aplicativo para Windows Phone e o arquivo \textbf{LocalizedStrings.cs} representa a classe que configura a internacionalização do aplicativo. As pastas, \textbf{Code} e \textbf{View} representam todo o código desenvolvido no projeto Uniara Virtual.  
+
+\begin{figure}[H]
+\centering
+\caption{Diagrama de classes das páginas}
+\fbox{\includegraphics[scale=0.4]{./graphics/dclasse-view-nopt.eps}}
+\label{fig:diag_view_1}
+\end{figure}
+
+A figura \ref{fig:diag_view_1}, representa o diagrama de classes das páginas do aplicativo. Cada classe herda diretamente de \textbf{PhoneApplicationPage}, classe base para representar uma página em um aplicativo Windows Phone. 
+Algumas destas classes possui uma referência para o armazenamento local dos dados no dispositivo, como pode ser identificado pelo membro privado \textbf{storage}. Assim como o método \textbf{IsConnected} é implementado em diversas classes.
+
+\begin{figure}[H]
+\centering
+\caption{Método para verificar conexão do dispositivo}
+\fbox{\includegraphics[scale=0.4]{./graphics/code_is_connected.eps}}
+\end{figure} 
+
+\begin{figure}[H]
+\centering
+\caption{Diagrama de classes das entidades}
+\fbox{\includegraphics[scale=0.4]{./graphics/classes_model_1.eps}}
+\label{fig:diag_model_1}
+\end{figure} 
+
+A figura \ref{fig:diag_model_1} representa o diagrama de classes das entidades. Cada uma destas classes possui apenas os membros assessores e transformadores públicos. 
+
+\begin{figure}[H]
+\centering
+\caption{Diagrama de classes dos conversores}
+\fbox{\includegraphics[scale=0.4]{./graphics/classes_converter_1.eps}}
+\label{fig:diag_converter_1}
+\end{figure}
+
+A figura \ref{fig:diag_converter_1} representa o diagrama de classes dos conversores utilizados na aplicação. Estes conversores implementam a interface \textbf{IValueConverter} e são utilizados para formatar, filtrar ou modificar dados que serão apresentados na tela do usuário. Por exemplo, a classe \textbf{RelativeDateTimeConverter} é utilizada para formatar um campo do tipo \textbf{DateTime} representado como "\textit{10/10/2014 14:00:00}" em data relativa "\textit{há 2 horas}".
+
+\begin{figure}[H]
+\centering
+\caption{Diagrama de classes para respostas do servidor}
+\fbox{\includegraphics[scale=0.4]{./graphics/classe_response_1.eps}}
+\label{fig:diag_response_1}
+\end{figure}
+
+A figura \ref{fig:diag_response_1} representa o diagrama de classes dos dados obtidos do serviço backend. Estas classes representam as mensagens trocadas pelo aplicativo e servidor. Como pode ser observado, todas as classes possuem os seguintes membros públicos:
+\begin{itemize}
+\item \textbf{DataResult} - representa os dados, como aulas, faltas ou perfil do aluno, retornado do servidor;
+\item \textbf{MessageResult} - representa uma mensagem, quando necessária, retornada do servidor;
+\item \textbf{RequestDate} - representa a data da requisição dos dados; e
+\item \textbf{StatusCodeResult} - representa um código de erro ou sucesso do servidor.
+\end{itemize}
+
+\section{Adequação ao padrão MVVM}
+Este tópico demostra como adequar o projeto existe ao padrão MVVM. Como foi abordado no capitulo 2, o padrão MVVM visa a separação de responsabilidades entre camadas de aplicação lógica e a camada de visão.  Atualmente no mercado existem diversos frameworks que implementam o padrão MVVM, sendo os dois principais: Prism da Microsoft e o MVVM Light de Laurent Bugnion.  Ambos os frameworks possuem o mesmo conceito, alguns nomes de métodos e classes implementadas semelhantes e uma boa documentação.  O Prism é vol- tado para aplicações mais robustas, enquanto o MVVM Light para aplicações mais simples. As bibliotecas para ambos frameworks podem ser importadas diretamente pelo Visual Studio, via Nuget. Para o Prism, há ainda uma dependência, o Unity, uma robusta biblioteca para injeção de dependência e inversão de controle.  Enquanto o MVVM Light utiliza uma solução proprietária mais simples.
+As bibliotecas para ambos frameworks podem ser importadas diretamente pelo Visual Studio, via Nuget. Para o Prism, há ainda uma dependência, o \textbf{Unity}, uma robusta biblioteca para injeção de dependência e inversão de controle. Enquanto o MVVM Light utiliza uma solução proprietária mais simples.
+
+Diante do fato que o MVVM Light é o mais recomendado para aplicações simples e possuir, também, uma boa documentação, o projeto atual do aplicativo Uniara Virtual será adequado para este framework.
+
+\subsection{Importação das bibliotecas necessárias}
+A seguinte biblioteca será necessária para importação no projeto, via Nuget, MVVMLight. Após a instalação da biblioteca algumas alterações são necessárias para adequação do projeto ao framework.
+
+\begin{enumerate}
+\item \textbf{Criação do namespace ViewModel} - será necessário criar uma pasta no projeto com o nome \textit{ViewModel}
+\item \textbf{Criação da classe ViewModelLocator} - dentro do namespace ViewModel será necessário a criação da classe \textit{ViewModelLocator}. Está classe é uma espécie de repositório para todas as ViewModels da aplicação, sendo ela responsável por referenciar todas as ViewModels e prover o ponto de entrada para a ligação de dados.
+\item \textbf{Alteração do arquivo App.xaml} - incluir entrada no arquivo referenciando a classe ViewModelLocator, afim de obter visibilidade em toda aplicação.
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\caption{Implementação básica da classe ViewModelLocator}
+\fbox{\includegraphics[scale=0.5]{./graphics/step2.eps}}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\caption{Referencia estática para ViewModelLocator em App.xaml}
+\fbox{\includegraphics[scale=0.5]{./graphics/step1.eps}}
+\end{figure}
+
+\subsection{Criação das ViewModels}
+Para \cite{prism5}, a ViewModel encapsula a lógica de apresentação e dados para a View e implementa propriedades e comandos para que a View possa vincular dados e notificar mudanças de estado por intermédio de eventos associados. 
+
+Atualmente as classes dentro do namespace \textbf{View}, que representam as páginas da aplicação, possuem toda a lógica de negócios implementada, assim como acesso a dados e a implementação do layout.
+
+Para adequar o projeto ao padrão MVVM, visando separar toda implementação pertinente á acesso a dados, regras de negócio, comunicação com serviço backend e validação, será criado diversas ViewModels. 
+
+Seguindo o diagrama de classes da figura \ref{fig:diag_view_1}, será criado uma ViewModel para cada classe que represente uma página na aplicação. Desta maneira, será possível separar toda lógica da aplicação da camada de visão, como prevê o padrão MVVM. Para que o sistema de passagem de informações seja implementado corretamente, visado a ligação de dados entre a View e ViewModel, o framework MVVM Light fornece uma classe que deve-se estender em todas as ViewModels da aplicação, a \textbf{ViewModelBase}. Está classe fornece os métodos necessários para notificação das alterações nas propriedades da camada ViewModel.
+
+\begin{figure}[H]
+\centering
+\caption{Diagrama de classes das ViewModels}
+\fbox{\includegraphics[scale=0.5]{./graphics/step3.eps}}
+\label{fig:mvvm_viewmodel}
+\end{figure}
+
+Para finalizar, será necessário referenciar cada ViewModel criada na ViewModelLocator. Desta maneira qualquer classe que queira se comunicar com as ViewModels deverá solicitar a ViewModelLocator.
+
+\begin{figure}[H]
+\centering
+\caption{Referencias das ViewModels em ViewModelLocator}
+\fbox{\includegraphics[scale=0.5]{./graphics/step4.eps}}
+\end{figure}
+
+\subsection{Criação dos Models}
+Para \cite{prism5}, a Model encapsula a lógica de negócios e acesso a dados da aplicação, normalmente implementam a interface \textbf{INotifyPropertyChanged} para notificar a alteração de dados.
+
+Atualmente, no projeto, as classes que representam o modelo na aplicação são apresentadas no diagrama de classes da figura \ref{fig:mvvm_model}. Para adequar estas classes ao padrão MVVM, cada uma delas implementará a interface INotifyPropertyChanged. A seguir, a figura \ref{fig:mvvm_model_2} demostra como fica a classe \textbf{Perfil}.
+
+\begin{figure}[H]
+\centering
+\caption{Classe Perfil após implementação de INotifyPropertyChanged}
+\fbox{\includegraphics[scale=0.5]{./graphics/step5.eps}}
+\label{fig:mvvm_model_2}
+\end{figure}
+
+\subsection{Referenciando a ViewModel na View}
+Para \cite{prism5} "a responsabilidade da View é definir a estrutura e aparência da interface do usuário", o que não ocorre atualmente no projeto Uniara Virtual, pois cada classe que representa a página do aplicativo contem regras de apresentação, acesso a dados e validação. 
+
+Para adequar ao padrão MVVM, primeiramente será necessário referenciar a ViewModel que atenderá as notificações da View. Com isso, cada classe que presenta uma determinada página da aplicação, de acordo com a figura \ref{fig:diag_view_1} fará referência a uma ViewModel do diagrama de classes da figura \ref{fig:mvvm_viewmodel}. 
+
+Para realizar esta referência na View, será necessário alterar o arquivo XAML de cada página da aplicação. A seguir,  a figura \ref{fig:datacontext_1} demostra a alteração necessária na pagina LoginPage.xaml.
+
+\begin{figure}[H]
+\centering
+\caption{Inclusão da propriedade DataContext e referência para LoginViewModel}
+\fbox{\includegraphics[scale=0.5]{./graphics/step6.eps}}
+\label{fig:datacontext_1}
+\end{figure}
+
+\section{Refatoração do projeto}
+O tópico anterior apenas adequou o projeto para iniciar o uso do padrão MVVM. Este tópico tem como objetivo concluir a adequação do projeto para o padrão MVVM, refatorando métodos e classes visando o reaproveitamento de código, a manutenção, a separação das responsabilidades entre as camadas  e o melhor entendimento do projeto.
+
+De acordo com \cite{refatPad} o formato de refatoração de código deve possuir todas ou quase todas as seguintes partes:
+\begin{itemize}
+\item \textbf{Nome}: importante para a construção de um vocabulário de refatorações;
+\item \textbf{Resumo}: descreve o objetivo da refatoração;
+\item \textbf{Motivação}: descreve o porquê usar a refatoração;
+\item \textbf{Mecânica}: passo-a-passo para realizar a refatoração; e
+\item \textbf{Exemplo}: importante para mostrar como usar a refatoração.
+\end{itemize}
+
+Para este trabalho, cada sub-tópico a seguir representa o nome da refatoração a ser realizada. Será incluso, no início, um breve resumo quanto ao objetivo da refatoração. O passo-a-passo de como realizar a tarefa de refatoração e quando necessário, será apresentado trecho do código refatorado e/ou diagramas do resultado.
+
+\subsection{Separando a camada de apresentação da camada de visão}
+Para \cite{prism5}, o ideal é que a camada de visão contenha apenas o construtor com a chamada para o método \textbf{InitializeComponent}. Diante deste afirmação, será necessário mover todo código das classes que representam as páginas da aplicação para suas respectivas ViewModels.
+
+Existem casos que é necessário implementar código nas classes da camada de visão, normalmente quando é preciso realizar alguma animação ou manipular o estado de algum controle que não faz sentido realizá-lo na ViewModel. 
+
+A primeira classe eleita para está tarefa é a LoginPage. Esta classe representa a tela de login da aplicação e possui dois campos para entrada de dados do usuário, \textit{Matricula} e \textit{Senha} e um botão para efetuar login. Quando o usuário "toca" no botão \textit{Logar} os dados de entrada são validados e enviados para o serviço backend para autenticação. Podendo retornar uma mensagem de erro ou concluir a autenticação e encaminhar o usuário para a tela principal do aplicativo.
+
+\begin{figure}[H]
+\centering
+\caption{Classe LoginPage}
+\fbox{\includegraphics[scale=0.5]{./graphics/login_view_1.eps}}
+\end{figure}
+
+\begin{enumerate}
+\item Os atributos privados são movidos para a ViewModel;
+\item É criado propriedades públicas para os atributos que representam controles na tela do usuário;
+\item As propriedades públicas que devem notificar a View o método \textbf{RaisePropertyChanged} da super classe é chamado a cada modificação;
+\item Os métodos privados e públicos são movidos para a ViewModel;
+\item Os métodos manipuladores de eventos que não modificam apenas controles na tela de usuário é movido para ViewModel;
+\item Para cada método manipulador de evento é criado uma propriedade publica do tipo RelayCommand e o método é modificado para adequar a especificação da classe RelayCommand;
+\item Os componentes na interface do usuário que possuem referenciam com propriedades publicas na ViewModel devem ser ligados pela propriedade DataBinding;
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\caption{DataBinding realizado na propriedade Matricula}
+\fbox{\includegraphics[scale=0.5]{./graphics/txtmatricula.eps}}
+\end{figure}
+
+Neste momento, a classe LoginPage e LoginViewModel apresentam da seguinte forma:
+
+\begin{figure}[H]
+\centering
+\caption{Refatoração para o padrão MVVM}
+\fbox{\includegraphics[scale=0.5]{./graphics/login1.eps}}
+\end{figure}
+
+O primeiro passo para adequação e refatoração do projeto rumo ao padrão MVVM foi realizada, para as demais classes do projeto será realizado o mesmo procedimento.
+
+\subsection{Refatorando as entidades}
+Para que o mecanismo de ligação de dados possa funcionar corretamente, deve-se implementar em cada entidade do modelo à interface \textbf{INotifyPropertyChanged}. Além desta implementação deve-se para cada propriedade pública da entidade, notificar a alteração. 
+
+O método que realiza está notificação é implementado da seguinte maneira.
+
+\begin{figure}[H]
+\centering
+\caption{Mecanismo de notificação usando a interface INotifyPropertyChanged}
+\fbox{\includegraphics[scale=0.5]{./graphics/mvvm_model.eps}}
+\end{figure}
+
+Esta implementação deve ser realizada em todas as classes que representam o modelo da aplicação. Visando o reuso de código e evitando duplicação será criado uma classe que implemente o código apresentado na imagem e cada classe do modelo deverá estender está.
+
+\begin{figure}[H]
+\centering
+\caption{Diagrama de classes para modelo da aplicação}
+\fbox{\includegraphics[scale=0.5]{./graphics/modelo_mvvm_2.eps}}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\caption{Exemplo de código implementação do modelo}
+\fbox{\includegraphics[scale=0.5]{./graphics/modelo_mvvm_code2.eps}}
+\end{figure}
+
+Desta maneira, sempre que houver alguma alteração nas propriedades da entidade, as classes cliente serão notificadas.
+
+\subsection{Encapsulando a camada de persistencia de dados}
+O aplicativo Uniara Virtual não possui persistência de dados em banco, como é de costume na maioria dos aplicativos. No entanto, grande parte das informações ficam armazenadas em uma área de memória local do aplicativo. 
+
+No cenário atual, cada ViewModel acessa diretamente essa área de memória, por intermédio da classe \textbf{IsolatedStorageSettings}, indicando um forte acoplamento entra a ViewModel e a classe IsolatedStorageSettings. 
+
+A maneira mais ideal para solucionar este problema é criando uma camada de serviço para acesso aos dados armazenados na aplicação. Com isso a ViewModel passaria consumir uma interface comum de serviço. Sendo assim, criou-se uma interface nomeada como \textbf{IRepositorioService} para acesso a dados.
+
+\begin{figure}[H]
+\centering
+\caption{Serviço para acesso aos dados armazenados}
+\fbox{\includegraphics[scale=0.6]{./graphics/storage_service.eps}}
+\end{figure}
+
+Para implementação desta interface, primeiramente será criada uma classe abstrata que fará toda manipulação da API do Windows Phone para armazenamento local, via IsolatedStorageSettings. 
+
+Outra classe será criada, sendo que está implementa a interface IRepositorioService e estende de StorageBasicApp, classe criada anteriormente. Abaixo, o diagrama de classes desta camada de serviço é apresentado.
+
+\begin{figure}[H]
+\centering
+\caption{Diagrama de classes da camada de acesso aos dados}
+\fbox{\includegraphics[scale=0.8]{./graphics/RepositorioService_class.eps}}
+\end{figure}
+
+O interessante desta abordagem é que, se em algum momento for necessário modificar a implementação do serviço de repositório, por exemplo, começar a armazenar os dados em banco, será necessário apenas modificar a classe concreta, desta maneira os clientes não serão alterados.
+
+\subsection{Encapsulando a camada de comunicação ao servidor}
+As informações referentes aos alunos, notas e faltas são recuperadas de um serviço backend hospedado na internet. Toda comunicação com esse serviço é realizada através do protocolo HTTP, o padrão de mensagem trafegada é o REST/JSON.
+
+Para esta comunicação o aplicativo utiliza a biblioteca RestSharp, que encapsula diversos métodos para requisição HTTP e serialização de objetos para JSON e vice-versa.
+
+No entanto, assim como a camada de persistência, todas as informações e implementação deste acesso é realizado diretamente pela ViewModel. De maneira muito semelhante a solução proposta pela camada de persistência, será implementado uma camada de serviço afim de prover uma interface comum para consumo destes dados.
+
+\begin{figure}[H]
+\centering
+\caption{Serviço para acesso aos dados do serviço backend}
+\fbox{\includegraphics[scale=0.8]{./graphics/backend_service.eps}}
+\end{figure}
+
+Uma classe de nome \textbf{UniaraBackendService} será criada para implementar esta interface. E todo código referente a comunicação com o serviço backend contido nas ViewModels será movido para esta nova classe, assim como os atributos privados que representam as URLs para o serviço.
+
+Para finalizar o método \textbf{EncodeCredentials} deve ser movido para a classe UniaraBackendService e removido todas as referências para este método nas demais ViewModels. O diagrama de classe a seguir apresenta o resultado final desta refatoração.
+
+\begin{figure}[H]
+\centering
+\caption{Diagrama de classes da camada de acesso ao serviço backend}
+\fbox{\includegraphics[scale=0.8]{./graphics/UniaraBackendService_Class.eps}}
+\end{figure}
+
+\subsection{Removendo código duplicado}
+Segundo \cite[p.~71]{refatFowler}, "o problema mais simples de código duplicado é quando você tem a mesma expressão em dois métodos da mesma classe" ou quando a mesma expressão é encontrada em duas classes irmãs. Observando a figura \ref{fig:viewModel3} o método IsConnected aparece em três classes, AulasViewModel, MenuViewModel e LoginViewModel. Este método não só possui o mesmo nome, como possui a mesma implementação. 
+
+\begin{figure}[H]
+\centering
+\caption{Diagrama de classes das ViewModels adequadas ao padrão MVVM}
+\fbox{\includegraphics[scale=0.5]{./graphics/ViewModels_3.eps}}
+\label{fig:viewModel3}
+\end{figure}
+
+Neste caso será necessário utilizar a refatoração \cite[p.~275]{refatFowler} Subir Método na Hierarquia, desta forma todas as sub-classes poderão utilizá-los.
+
+Todas as ViewModels herdam da classe ViewModelBase, o que a torna elegível para implementar o método ISConnected. Porém por se tratar de uma classe do framework MVVMLight e ter sido importada no projeto como uma biblioteca, não é possível alterar seu código. Desta forma é necessário criar uma classe intermediaria para utilização desta refatoração, mover o método para esta nova classe e estende-la nas ViewModels. 
+
+Ainda nas ViewModels é possivel notar que os campos messageBoxService, navigationService, repositorioService e uniaraBackendService estão presentes em todas as classes. Sendo assim, será necessário aplicar \cite[p.~272]{refatFowler} Subir Campo na Hierarquia, neste caso, para a classe que foi criada.
+
+Após estas duas refatorações a figura \ref{fig:viewModel4} mostra o diagrama de classes das ViewModels.
+
+\begin{figure}[H]
+\centering
+\caption{Diagrama de classes das ViewModels após refatoração}
+\fbox{\includegraphics[scale=0.6]{./graphics/ViewModel4.eps}}
+\label{fig:viewModel4}
+\end{figure}
+
+\section{Considerações Finais}
+Após a refatoração do projeto com os conceitos do padrão MVVM e adequação de métodos, membros e hierarquia de classes pode-se notar as seguintes vantagens:
+
+\begin{enumerate}
+\item Hierarquia de classes mais consistentes;
+\item Reuso de código;
+\item Possibilidade de execução de testes unitários;
+\item Melhor compreensão do código; e
+\item Divisão em camadas;
+\end{enumerate}
+
+%=================================================
+% CONCLUSÃO
+%=================================================
+
+\chapter{Conclusão}
+Este trabalho foi desenvolvido com o propósito de realizar um estudo que abordasse as principais técnicas de refatoração de software. Demonstrando como e quando aplicá-las em sistemas que não fazem uso das boas práticas de desenvolvimento de software.
+
+A refatoração se faz necessária, na maioria dos casos, quando há problemas no entendimento do código do projeto ou quando é custoso a sua alteração, \cite{refatFowler}.  Também foi possível notar que a refatoração não só melhora o projeto de código como permite ir rumo a padrões de projeto, assim como afirma \cite[p.~98]{refatFowler}, "Há uma relação entre padrões e refatoração. Padrões são onde você quer estar; refatorações são os modos de chegar lá".
+
+É importante ressaltar que este estudo permite observar que um projeto que foi desenvolvido sem se atentar ao uso das boas práticas de desenvolvimento de software pode, por meio de refatorações, ser melhorado e passar a utilizar de maneira correta os conceitos da programação orientada a objetos e o uso de padrões de projeto.
+
+O estudo de caso realizado a partir do aplicativo Uniara Virtual possibilitou a aplicação de diversas refatorações rumo a padrões de projeto, neste caso o padrão MVVM, que é o mais adequado para este tipo de aplicação. Dessa forma, foi possível separar lógica de negócios da lógica de apresentação, permitindo assim, tornar a aplicação mais simples e de fácil entendimento. 
+
+Embora somente tenha sido utilizado um aplicativo simples e com funcionalidades bem conhecidas, acredita-se que o processo possa ser aplicado em outros aplicativos Windows Phone de maiores complexidades. 
+
+O presente estudo, que investigou a utilização de refatorações rumo a padrões de projeto em um aplicativo Windows Phone, vem facilitar o entendimento sobre esse assunto. Conhecer essas refatorações e aplicá-las de forma correta facilita ou, até mesmo, minimiza o trabalho de desenvolvedores que desejam utilizar padrões de projeto em seus aplicativos.
+
+
+\newpage
+
+%=================================================
+% REFERÊNCIAS BIBLIOGRÁFICAS
+%=================================================
+
+\citeoption{abnt-etal-list=15}  % Para visualizar toda a bibliografia, coloque um % no início desta linha e retira o % de \nocite{*}
+\bibliographystyle{abnt-alf}
+\renewcommand{\refname}{REFERÊNCIAS BIBLIOGRÁFICAS}
+%\nocite{*}
+\bibliography{bibliografia}
+
+%=================================================
+% APENDICE
+%=================================================
+
+%\apendice
+%\chapter{Demonstração do Cálculo de Desempenho}
+
+%=================================================
+% ANEXO
+%=================================================
+
+%\anexo
+%\chapter{Xx}
+
+\end{document}
